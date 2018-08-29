@@ -19,6 +19,7 @@ const sassGrapher = require('gulp-sass-grapher');
 const sourcemaps = require('gulp-sourcemaps');
 const uglify = require('gulp-uglify');
 const path = require('path');
+const through = require('through2');
 const map = require('vinyl-map');
 const named = require('vinyl-named');
 const webpack = require('webpack');
@@ -131,6 +132,14 @@ gulp.task('scripts', () => {
       }
     ))
     .pipe(webpackStream(webpackConfig, webpack))
+    .pipe(sourcemaps.init({loadMaps: true}))
+    .pipe(through.obj(function (file, enc, cb) {
+      // Dont pipe through any source map files as it will be handled by gulp-sourcemaps
+      const isSourceMap = /\.map$/.test(file.path);
+      if (!isSourceMap) this.push(file);
+      cb();
+    }))
+    .pipe(sourcemaps.write('.'))
     .pipe(gulp.dest(`./build/${themeName()}/scripts`))
 });
 

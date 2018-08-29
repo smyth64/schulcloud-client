@@ -3,6 +3,7 @@ const RebuildChangedPlugin = require('rebuild-changed-entrypoints-webpack-plugin
 
 module.exports = {
     mode: 'production',
+    devtool: 'source-map',
     module: {
         rules: [
             // All files that end on .js or .jsx are transpilled by babel
